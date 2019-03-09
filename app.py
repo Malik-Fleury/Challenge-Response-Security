@@ -8,6 +8,8 @@
 # - Malik Fleury
 # - Bastien Wermeille
 
+def hash_function(password):
+    return "hashpassword"
 
 class Client:
     def __init__(self, name, password):
@@ -19,7 +21,7 @@ class Client:
         nonce = server.get_nonce(self.name)
 
         # Hash password
-        hashed_pass = "TODO hash current password"
+        hashed_pass = hash_function(nonce+self.username)
         server.auth(self.name, hashed_pass)
 
         server.send_message()
@@ -41,7 +43,11 @@ class Server:
 
     def auth(self, username, hashed_pass):
         try:
-            return password_database[username] == hashed_pass
+            # Check validity
+            self.nonce_database[username]['validity']
+            nonce = self.nonce_database[username]['value']
+            hashed_pass_server = hash_function(nonce+username)
+            return hashed_pass_server == hashed_pass
         except Exception:
             return False
     
