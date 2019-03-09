@@ -9,25 +9,26 @@
 # - Bastien Wermeille
 
 # 1. Quel hachage cryptographique utilisez-vous et pourquoi ?
-# SHA3-256 : MD5, SHA1 ont des collisions et SHA2 se base sur le même principe que SHA1
-# https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
-# Sur les bases du site suivant nous avons décidé d'utiliser l'algorithme sha3_256,
-# ce choix est arbitraire et nous avons décidé d'utiliser celui-ci car il est considéré comme sûre et est plus rapide que la version 512.
-# Le choix peut varier selon la criticité de la situation et les moyens à disposition.
+#   SHA3-256 : MD5, SHA1 ont des collisions et SHA2 se base sur le même principe que SHA1
+#   https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
+#   Sur les bases du site suivant nous avons décidé d'utiliser l'algorithme sha3_256,
+#   ce choix est arbitraire et nous avons décidé d'utiliser celui-ci car il est considéré comme sûre et est plus rapide que la version 512.
+#   Le choix peut varier selon la criticité de la situation et les moyens à disposition.
 #
 # 2. Quelles précautions pour le générateur aléatoire ?
-# Grande entropie, tous les nombres doivent avoir la même probabilité d'être généré
+#   Grande entropie, tous suites de charactères doivent avoir la même probabilité d'être générés
 #
 # 3. Quelles précautions pour la construction garantissant l'unicité du nonce ?
-# Ajout d'un timestamp au nonce afin d'assurer l'unicité
+#   Ajout d'un timestamp au nonce afin d'assurer l'unicité
 #
 # 4. Quelles précautions pour la durée de validité du nonce ?
-# Il faut que la durée de validité soit courte, cela dans le but d'éviter les attaques de type "Replay attack".
-# Il faut également que les horloges des deux systèmes soient synchronisées,
-# car si une est retardé par rapport à l'autres alors le nonce peut être toujours invalide.
+#   Il faut que la durée de validité soit courte, cela dans le but d'éviter les attaques de type "Replay attack".
+#   Il faut également que les horloges des deux systèmes soient synchronisées,
+#   car si une est retardé par rapport à l'autres alors le nonce peut être considéré comme invalide.
 #
 # Sources
-# https://fr.wikipedia.org/wiki/Nonce_(cryptographie)
+#   - https://fr.wikipedia.org/wiki/Nonce_(cryptographie)
+#   - https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
 #
 
 import secrets
