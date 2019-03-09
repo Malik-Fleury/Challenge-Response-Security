@@ -63,7 +63,7 @@ class Client:
 
 
 class Server:
-    """Class representing a
+    """Class representing a server
 
     """
     def __init__(self, username, password_database, time_validity):
@@ -79,7 +79,10 @@ class Server:
         return nonce
 
     def check_nonce_validity(self, nonce):
-        validity = datetime.datetime.fromtimestamp(float(nonce.split("!")[1]))
+        splitted_data = nonce.split("!")
+        nonce_value = splitted_data[0]
+        timestamp = float(splitted_data[1])
+        validity = datetime.datetime.fromtimestamp()
         return validity + self.time_validity > datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
@@ -103,7 +106,6 @@ class Server:
             print(e)
             print(self.username + " auth requested by " + username + "nonce invalid")
             return False
-
 
 
 if __name__ == '__main__':
