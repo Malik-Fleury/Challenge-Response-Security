@@ -75,7 +75,7 @@ class Client:
             server: server to connect to
         """
 
-        print(self.username + " connect to " + server.username)
+        print(self.username + " connect to " + server.name)
 
         print(self.username + " request nonce")
         nonce = server.get_nonce(self.username)
@@ -129,7 +129,7 @@ class Server:
         splitted_data = nonce.split("!")
         nonce_value = splitted_data[0]
         timestamp = float(splitted_data[1])
-        validity = datetime.datetime.fromtimestamp()
+        validity = datetime.datetime.fromtimestamp(timestamp)
         return validity + self.time_validity > datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
@@ -148,11 +148,11 @@ class Server:
         try:
             # Check validity
             nonce = self.nonce_database[username]
-            if not check_nonce_validity(nonce):
+            if not self.check_nonce_validity(nonce):
                 print(self.name + " auth requested by " + username + " nonce invalid")
                 return False
 
-            if not check_nonce_validity(cnonce):
+            if not self.check_nonce_validity(cnonce):
                 print(self.name + " auth requested by " + username + " cnonce invalid")
                 return False
 
