@@ -18,7 +18,7 @@
 # Ajout d'un timestamp au nonce afin d'assurer l'unicité
 #
 # Quelles précautions pour la durée de validité du nonce ?
-#
+# 
 #
 
 import secrets
@@ -28,8 +28,7 @@ from datetime import timedelta
 
 def hash_function(password):
     # Use hexdigest to facilitate display
-    # passw = bytes(password)
-    return hashlib.shake_256(password.encode('utf-8')).hexdigest(256)
+    return hashlib.sha3_256(password.encode('utf-8')).hexdigest()
 
 def nonce_generation_function():
     return secrets.token_hex(16)
