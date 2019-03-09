@@ -79,9 +79,8 @@ class Server:
         return nonce
 
     def check_nonce_validity(self, nonce):
-        validity = int(nonce.split("!")[1])
-        print("CHECK : " + str(validity))
-        return validity + self.time_validity < datetime.datetime.now()
+        validity = datetime.datetime.fromtimestamp(float(nonce.split("!")[1]))
+        return validity + self.time_validity > datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
         print(self.username + " authentication requested by " + username)
@@ -92,11 +91,11 @@ class Server:
                 print(self.username + " auth requested by " + username + " nonce invalid")
                 return False
 
-            if not check_nonce_validity(cnonce):
+            if not self.check_nonce_validity(cnonce):
                 print(self.username + " auth requested by " + username + " cnonce invalid")
                 return False
 
-            nonce = self.nonce_database[username]['value']
+            nonce = self.nonce_database[username]
 
             hashed_pass_server = hash_function(nonce+cnonce+self.password_database[username])
             return secrets.compare_digest(hashed_pass_server, hashed_pass)
