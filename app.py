@@ -47,8 +47,9 @@ def nonce_generation_function():
         str: valid nonce with timestamp to avoid replay attacks
     
     """
-    # TODO Add timestamp to nonce
-    return secrets.token_hex(16)
+    timestamp = datetime.datetime.now().timestamp()
+    return secrets.token_hex(16) + "!" + str(timestamp)
+
 
 class Client:
     """ Class representing a client
@@ -89,7 +90,6 @@ class Client:
 
         print(self.username + " authentication " + ("successful" if status else "failed"))
         
-
 class Server:
     """Class representing a Server
 
@@ -126,10 +126,11 @@ class Server:
         return nonce
 
     def check_nonce_validity(self, nonce):
-        validity = "TODO extract valilidity from nonce"
-
-        # TODO Validate validity of nonce using self.time_validity of type timedelta
-        return validity + self.time_validity < datetime.datetime.now()
+        splitted_data = nonce.split("!")
+        nonce_value = splitted_data[0]
+        timestamp = float(splitted_data[1])
+        validity = datetime.datetime.fromtimestamp()
+        return validity + self.time_validity > datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
         """Authenticate to the server
@@ -155,7 +156,7 @@ class Server:
                 print(self.name + " auth requested by " + username + " cnonce invalid")
                 return False
 
-            nonce = self.nonce_database[username]['value']
+            nonce = self.nonce_database[username]
 
             hashed_pass_server = hash_function(nonce+cnonce+self.password_database[username])
             return secrets.compare_digest(hashed_pass_server, hashed_pass)
@@ -163,7 +164,6 @@ class Server:
             print(e)
             print(self.name + " auth requested by " + username + "nonce invalid")
             return False
-
 
 
 if __name__ == '__main__':
