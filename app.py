@@ -9,12 +9,16 @@
 # - Bastien Wermeille
 
 # Quel hachage cryptographique utilisez-vous et pourquoi ?
+# SHAKE_256 (SHA3) : MD5, SHA1 ont des collisions et SHA2 se base sur le même principe que SHA1
 #
 # Quelles précautions pour le générateur aléatoire ?
+# Grande entropie, tous les nombres doivent avoir la même probabilité d'être généré
 #
 # Quelles précautions pour la construction garantissant l'unicité du nonce ?
+# Ajout d'un timestamp au nonce afin d'assurer l'unicité
 #
 # Quelles précautions pour la durée de validité du nonce ?
+#
 #
 
 import secrets
