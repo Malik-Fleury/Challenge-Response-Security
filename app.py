@@ -31,9 +31,15 @@ def hash_function(password):
     return hashlib.sha3_256(password.encode('utf-8')).hexdigest()
 
 def nonce_generation_function():
+    # TODO Add timestamp to nonce
     return secrets.token_hex(16)
 
 class Client:
+    """ Class representing a client
+
+    The client will authenticate to a server using a CHAP protocol
+    """
+
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -56,6 +62,9 @@ class Client:
         
 
 class Server:
+    """Class representing a 
+
+    """
     def __init__(self, username, password_database, time_validity):
         self.username = username
         self.password_database = password_database
@@ -65,20 +74,28 @@ class Server:
     def get_nonce(self, username):
         print(self.username + " nonce requested")
         nonce = nonce_generation_function()
-        self.nonce_database[username] = {
-            'validity':datetime.datetime.now() + self.time_validity,
-            'value': nonce
-        }
+        self.nonce_database[username] = nonce
         return nonce
+
+    def check_nonce_validity(self, nonce):
+        validity = "TODO extract valilidity from nonce"
+
+        # TODO Validate validity of nonce using self.time_validity of type timedelta
+        return validity < datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
         print(self.username + " authentication requested by " + username)
         try:
             # Check validity
-            validity = self.nonce_database[username]['validity']
-            if validity < datetime.datetime.now():
-                print(self.username + " auth requested by " + username + "nonce invalid")
+            nonce = self.nonce_database[username]
+            if not check_nonce_validity(nonce):
+                print(self.username + " auth requested by " + username + " nonce invalid")
                 return False
+            
+            if not check_nonce_validity(cnonce):
+                print(self.username + " auth requested by " + username + " cnonce invalid")
+                return False
+
             nonce = self.nonce_database[username]['value']
 
             hashed_pass_server = hash_function(nonce+cnonce+self.password_database[username])
