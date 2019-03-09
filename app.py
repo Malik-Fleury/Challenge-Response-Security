@@ -32,7 +32,7 @@ def hash_function(password):
     return hashlib.sha3_256(password.encode('utf-8')).hexdigest()
 
 def nonce_generation_function():
-    timestamp = datetime.datetime.now()
+    timestamp = datetime.datetime.now().timestamp()
     return secrets.token_hex(16) + "!" + str(timestamp)
 
 class Client:
