@@ -36,7 +36,7 @@ import hashlib
 import datetime
 from datetime import timedelta
 
-separator = "!"
+nonce_timestamp_separator = "!"
 
 def hash_function(password):
     """Hash function
@@ -59,7 +59,7 @@ def nonce_generation_function():
 
     """
     timestamp = datetime.datetime.now().timestamp()
-    return secrets.token_hex(16) + separator + str(timestamp)
+    return str(timestamp) + nonce_timestamp_separator + secrets.token_hex(16)
 
 
 class Client:
@@ -147,9 +147,9 @@ class Server:
             bool: validity of the nounce
 
         """
-        splitted_data = nonce.split(separator)
-        nonce_value = splitted_data[0]
-        timestamp = float(splitted_data[1])
+        splitted_data = nonce.split(nonce_timestamp_separator)
+        timestamp = float(splitted_data[0])
+        nonce_value = "".join(splitted_data[1:])
         validity = datetime.datetime.fromtimestamp(timestamp)
         return validity + self.time_validity > datetime.datetime.now()
 
@@ -172,10 +172,12 @@ class Server:
             if not self.check_nonce_validity(nonce):
                 print(self.name + " auth requested by " + username + " nonce invalid")
                 return False
+            print(self.name + " nonce validated")
 
             if not self.check_nonce_validity(cnonce):
                 print(self.name + " auth requested by " + username + " cnonce invalid")
                 return False
+            print(self.name + " cnonce validated")
 
             nonce = self.nonce_database[username]
 
