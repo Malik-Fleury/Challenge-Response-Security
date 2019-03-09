@@ -8,6 +8,15 @@
 # - Malik Fleury
 # - Bastien Wermeille
 
+# Quel hachage cryptographique utilisez-vous et pourquoi ?
+#   
+# Quelles précautions pour le générateur aléatoire ?
+#   
+# Quelles précautions pour la construction garantissant l'unicité du nonce ?
+#   
+# Quelles précautions pour la durée de validité du nonce ?
+#   
+
 def hash_function(password):
     return "hashpassword"
 
