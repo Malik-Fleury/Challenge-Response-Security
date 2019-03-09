@@ -49,7 +49,7 @@ class Server:
         self.password_database = password_database
         self.time_validity = time_validity
         self.nonce_database = {}
-        self.rng = secrets.SystemRandom();
+        self.rng = secrets.SystemRandom()
 
     def get_nonce(self, username):
         nonce = self.rng.random()
