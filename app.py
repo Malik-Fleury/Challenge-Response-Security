@@ -11,6 +11,9 @@
 # Quel hachage cryptographique utilisez-vous et pourquoi ?
 # SHA3-256 : MD5, SHA1 ont des collisions et SHA2 se base sur le même principe que SHA1
 # https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
+# Sur les bases du site suivant nous avons décidé d'utiliser l'algorithme sha3_256,
+# ce choix est arbitraire et nous avons décidé d'utiliser celui-ci car il est considéré comme sûre et est plus rapide que la version 512.
+# Le choix peut varier selon la criticité de la situation et les moyens à disposition
 #
 # Quelles précautions pour le générateur aléatoire ?
 # Grande entropie, tous les nombres doivent avoir la même probabilité d'être généré
@@ -126,6 +129,15 @@ class Server:
         return nonce
 
     def check_nonce_validity(self, nonce):
+        """Check the validity of a nonce
+
+        Args:
+            nonce: nonce to check
+        
+        Returns:
+            bool: validity of the nounce
+
+        """
         splitted_data = nonce.split("!")
         nonce_value = splitted_data[0]
         timestamp = float(splitted_data[1])
@@ -167,6 +179,10 @@ class Server:
 
 
 if __name__ == '__main__':
+    """Main function
+
+    Create a client, a server and make them collaborate
+    """
     password_database = {
         'Alice': '8xHm5EbL6S%M%QHD^UN327Y8dzJq7B*_Zk@bdJ=39A97^3%rsr',
         'Jon': 'atpy+hQB4uc4b!+xs?fBY%_?+ASf_*r@fFD3GKVc8-63?vku6F',
