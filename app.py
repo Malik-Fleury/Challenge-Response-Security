@@ -22,7 +22,11 @@
 # Ajout d'un timestamp au nonce afin d'assurer l'unicité
 #
 # Quelles précautions pour la durée de validité du nonce ?
-# Il faut que la durée de validité soit courte, cela dans le but d'éviter les attaques de type "Replay attack"
+# Il faut que la durée de validité soit courte, cela dans le but d'éviter les attaques de type "Replay attack".
+# Il faut également que les horloges des deux systèmes soient synchronisées.
+#
+# Sources
+# https://fr.wikipedia.org/wiki/Nonce_(cryptographie)
 #
 
 import secrets
@@ -133,7 +137,7 @@ class Server:
 
         Args:
             nonce: nonce to check
-        
+
         Returns:
             bool: validity of the nounce
 
