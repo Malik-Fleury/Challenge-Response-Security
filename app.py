@@ -20,13 +20,15 @@
 import secrets
 import hashlib
 import datetime
+from datetime import timedelta
 
 def hash_function(password):
     # Use hexdigest to facilitate display
-    return hashlib.shake_256(bytes(password)).hexdigest()
+    # passw = bytes(password)
+    return hashlib.shake_256(password.encode('utf-8')).hexdigest(256)
 
 def nonce_generation_function():
-    return secrets.SystemRandom().random()
+    return secrets.token_hex(16)
 
 class Client:
     def __init__(self, username, password):
@@ -36,10 +38,11 @@ class Client:
     def connect(self, server):
         print(self.username + " connect to " + server.username)
         nonce = server.get_nonce(self.username)
+        cnonce = nonce_generation_function()
 
         # Hash password
-        hashed_pass = hash_function(str(nonce) + self.username)
-        server.auth(self.username, hashed_pass)
+        hashed_pass = hash_function(nonce + cnonce + self.password)
+        server.auth(self.username, cnonce, hashed_pass)
 
         server.send_message()
 
@@ -49,23 +52,25 @@ class Server:
         self.password_database = password_database
         self.time_validity = time_validity
         self.nonce_database = {}
-        self.rng = secrets.SystemRandom()
 
     def get_nonce(self, username):
-        nonce = self.rng.random()
+        nonce = nonce_generation_function()
         self.nonce_database[username] = {
-            'validity':datetime.datetime.now() + timedelta(seconds=self.time_validity),
+            'validity':datetime.datetime.now() + self.time_validity,
             'value': nonce
         }
         return nonce
 
-    def auth(self, username, hashed_pass):
+    def auth(self, username, cnonce, hashed_pass):
         try:
             # Check validity
-            self.nonce_database[username]['validity']
+            validity = self.nonce_database[username]['validity']
+            if validity < datetime.datetime.now():
+                return False
             nonce = self.nonce_database[username]['value']
-            hashed_pass_server = hash_function(nonce+username)
-            return hashed_pass_server == hashed_pass
+
+            hashed_pass_server = hash_function(nonce+cnonce+username)
+            return secrets.compare_digest(hashed_pass_server, hashed_pass)
         except Exception:
             return False
 
@@ -76,14 +81,15 @@ if __name__ == '__main__':
     #TODO
 
     password_database = {
-        'Alice': 'a9d9gV!@P8L)<=a?[kMGV]\>AGe-~dFbuTE]u<qv/`F5Tcf7m/',
-        'Jon': '9-a/3s\~UQ@R-tq3=qJDAy)MFbAg68Psf\f59g,F*hQ`*R6#+c',
-        'Emilia': '9-a/3s\~UQ@R-tq3=qJDAy)MFbAg68Psf\f59g,F*hQ`*R6#+c'
+        'Alice': '8xHm5EbL6S%M%QHD^UN327Y8dzJq7B*_Zk@bdJ=39A97^3%rsr',
+        'Jon': 'atpy+hQB4uc4b!+xs?fBY%_?+ASf_*r@fFD3GKVc8-63?vku6F',
+        'Emilia': 'z!@W3yKFPdV*-@-Qwu&VX*JHTjFR2q42MnKMYV8a6mPmtMFhy$'
     }
-    # 
-    server_nonce_validity = 15
+
+    # Nonce duration validity
+    server_nonce_validity = timedelta(seconds=15)
 
     alice = Client('Alice', password_database['Alice'])
-    bob = Server('Bob', password_database, )
+    bob = Server('Bob', password_database, server_nonce_validity)
 
     alice.connect(bob)
