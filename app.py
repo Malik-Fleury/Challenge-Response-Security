@@ -15,7 +15,7 @@
 # Grande entropie, tous les nombres doivent avoir la même probabilité d'être généré
 #
 # Quelles précautions pour la construction garantissant l'unicité du nonce ?
-#
+# Ajout d'un timestamp au nonce afin d'assurer l'unicité
 #
 # Quelles précautions pour la durée de validité du nonce ?
 #
