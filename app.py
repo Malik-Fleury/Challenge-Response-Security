@@ -1,21 +1,23 @@
 # Project
 #   Small CHAP logic example
-# 
+#
 # Date
 #   09.03.2019
-# 
-# Author 
+#
+# Author
 # - Malik Fleury
 # - Bastien Wermeille
 
 # Quel hachage cryptographique utilisez-vous et pourquoi ?
-#   
+#
 # Quelles précautions pour le générateur aléatoire ?
-#   
+#
 # Quelles précautions pour la construction garantissant l'unicité du nonce ?
-#   
+#
 # Quelles précautions pour la durée de validité du nonce ?
-#   
+#
+
+import secrets
 
 def hash_function(password):
     return "hashpassword"
@@ -40,9 +42,10 @@ class Server:
         self.name = name
         self.password_database = password_database
         self.nonce_database = {}
+        self.rng = secrets.SystemRandom();
 
     def get_nonce(self, username):
-        nonce = "TODO Random nonce"
+        nonce = self.rng.random()
         self.nonce_database[username] = {
             'validity':12,
             'value': nonce
@@ -59,7 +62,7 @@ class Server:
             return hashed_pass_server == hashed_pass
         except Exception:
             return False
-    
+
     def send_message(self):
         pass
 
