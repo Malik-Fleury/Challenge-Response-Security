@@ -23,23 +23,23 @@ def hash_function(password):
     return "hashpassword"
 
 class Client:
-    def __init__(self, name, password):
-        self.name = name
+    def __init__(self, username, password):
+        self.username = username
         self.password = password
 
     def connect(self, server):
-        print(self.name + " connect to " + server.name)
-        nonce = server.get_nonce(self.name)
+        print(self.username + " connect to " + server.username)
+        nonce = server.get_nonce(self.username)
 
         # Hash password
-        hashed_pass = hash_function(nonce+self.username)
-        server.auth(self.name, hashed_pass)
+        hashed_pass = hash_function(nonce + self.username)
+        server.auth(self.username, hashed_pass)
 
         server.send_message()
 
 class Server:
-    def __init__(self, name, password_database):
-        self.name = name
+    def __init__(self, username, password_database):
+        self.username = username
         self.password_database = password_database
         self.nonce_database = {}
         self.rng = secrets.SystemRandom();
