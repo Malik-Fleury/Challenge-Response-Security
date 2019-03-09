@@ -19,10 +19,14 @@
 
 import secrets
 import hashlib
+import datetime
 
 def hash_function(password):
     # Use hexdigest to facilitate display
     return hashlib.shake_256(bytes(password)).hexdigest()
+
+def nonce_generation_function():
+    return secrets.SystemRandom().random()
 
 class Client:
     def __init__(self, username, password):
@@ -40,16 +44,17 @@ class Client:
         server.send_message()
 
 class Server:
-    def __init__(self, username, password_database):
+    def __init__(self, username, password_database, time_validity):
         self.username = username
         self.password_database = password_database
+        self.time_validity = time_validity
         self.nonce_database = {}
         self.rng = secrets.SystemRandom();
 
     def get_nonce(self, username):
         nonce = self.rng.random()
         self.nonce_database[username] = {
-            'validity':12,
+            'validity':datetime.datetime.now() + timedelta(seconds=self.time_validity),
             'value': nonce
         }
         return nonce
@@ -75,8 +80,10 @@ if __name__ == '__main__':
         'Jon': '9-a/3s\~UQ@R-tq3=qJDAy)MFbAg68Psf\f59g,F*hQ`*R6#+c',
         'Emilia': '9-a/3s\~UQ@R-tq3=qJDAy)MFbAg68Psf\f59g,F*hQ`*R6#+c'
     }
+    # 
+    server_nonce_validity = 15
 
     alice = Client('Alice', password_database['Alice'])
-    bob = Server('Bob', password_database)
+    bob = Server('Bob', password_database, )
 
     alice.connect(bob)
