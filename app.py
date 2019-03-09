@@ -18,9 +18,11 @@
 #
 
 import secrets
+import hashlib
 
 def hash_function(password):
-    return "hashpassword"
+    # Use hexdigest to facilitate display
+    return hashlib.shake_256(bytes(password)).hexdigest()
 
 class Client:
     def __init__(self, name, password):
@@ -51,7 +53,6 @@ class Server:
             'value': nonce
         }
         return nonce
-
 
     def auth(self, username, hashed_pass):
         try:
