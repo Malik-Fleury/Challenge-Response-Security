@@ -82,7 +82,7 @@ class Server:
         validity = "TODO extract valilidity from nonce"
 
         # TODO Validate validity of nonce using self.time_validity of type timedelta
-        return validity < datetime.datetime.now()
+        return validity + self.time_validity < datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
         print(self.username + " authentication requested by " + username)
