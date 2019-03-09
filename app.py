@@ -32,7 +32,7 @@ class Client:
         nonce = server.get_nonce(self.username)
 
         # Hash password
-        hashed_pass = hash_function(nonce + self.username)
+        hashed_pass = hash_function(str(nonce) + self.username)
         server.auth(self.username, hashed_pass)
 
         server.send_message()
