@@ -34,6 +34,8 @@ import hashlib
 import datetime
 from datetime import timedelta
 
+separator = "!"
+
 def hash_function(password):
     """Hash function
 
@@ -55,7 +57,7 @@ def nonce_generation_function():
 
     """
     timestamp = datetime.datetime.now().timestamp()
-    return secrets.token_hex(16) + "!" + str(timestamp)
+    return secrets.token_hex(16) + separator + str(timestamp)
 
 
 class Client:
@@ -143,7 +145,7 @@ class Server:
             bool: validity of the nounce
 
         """
-        splitted_data = nonce.split("!")
+        splitted_data = nonce.split(separator)
         nonce_value = splitted_data[0]
         timestamp = float(splitted_data[1])
         validity = datetime.datetime.fromtimestamp(timestamp)
