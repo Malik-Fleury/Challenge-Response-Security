@@ -32,8 +32,8 @@ def hash_function(password):
     return hashlib.sha3_256(password.encode('utf-8')).hexdigest()
 
 def nonce_generation_function():
-    # TODO Add timestamp to nonce
-    return secrets.token_hex(16)
+    timestamp = datetime.datetime.now()
+    return secrets.token_hex(16) + "!" + str(timestamp)
 
 class Client:
     """ Class representing a client
@@ -60,10 +60,10 @@ class Client:
         status = server.auth(self.username, cnonce, hashed_pass)
 
         print(self.username + " authentication " + ("sucessful" if status else "failed"))
-        
+
 
 class Server:
-    """Class representing a 
+    """Class representing a
 
     """
     def __init__(self, username, password_database, time_validity):
@@ -79,9 +79,8 @@ class Server:
         return nonce
 
     def check_nonce_validity(self, nonce):
-        validity = "TODO extract valilidity from nonce"
-
-        # TODO Validate validity of nonce using self.time_validity of type timedelta
+        validity = int(nonce.split("!")[1])
+        print("CHECK : " + str(validity))
         return validity + self.time_validity < datetime.datetime.now()
 
     def auth(self, username, cnonce, hashed_pass):
@@ -89,10 +88,10 @@ class Server:
         try:
             # Check validity
             nonce = self.nonce_database[username]
-            if not check_nonce_validity(nonce):
+            if not self.check_nonce_validity(nonce):
                 print(self.username + " auth requested by " + username + " nonce invalid")
                 return False
-            
+
             if not check_nonce_validity(cnonce):
                 print(self.username + " auth requested by " + username + " cnonce invalid")
                 return False
