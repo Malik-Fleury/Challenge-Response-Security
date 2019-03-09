@@ -20,6 +20,7 @@
 #
 # Quelles précautions pour la durée de validité du nonce ?
 # Il faut que la durée de validité soit courte, cela dans le but d'éviter les attaques de type "Replay attack"
+# https://seap.samsung.com/faq/what-nonce-and-why-it-valid-short-time-period
 #
 
 import secrets
