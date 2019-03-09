@@ -40,14 +40,20 @@ class Client:
 
     def connect(self, server):
         print(self.username + " connect to " + server.username)
+
+        print(self.username + " request nonce")
         nonce = server.get_nonce(self.username)
+
+        print(self.username + " generate cnonce")
         cnonce = nonce_generation_function()
 
-        # Hash password
         hashed_pass = hash_function(nonce + cnonce + self.password)
-        server.auth(self.username, cnonce, hashed_pass)
 
-        server.send_message()
+        print(self.username + " request authentication")
+        status = server.auth(self.username, cnonce, hashed_pass)
+
+        print(self.username + " authentication " + ("sucessful" if status else "failed"))
+        
 
 class Server:
     def __init__(self, username, password_database, time_validity):
@@ -57,6 +63,7 @@ class Server:
         self.nonce_database = {}
 
     def get_nonce(self, username):
+        print(self.username + " nonce requested")
         nonce = nonce_generation_function()
         self.nonce_database[username] = {
             'validity':datetime.datetime.now() + self.time_validity,
@@ -65,24 +72,25 @@ class Server:
         return nonce
 
     def auth(self, username, cnonce, hashed_pass):
+        print(self.username + " authentication requested by " + username)
         try:
             # Check validity
             validity = self.nonce_database[username]['validity']
             if validity < datetime.datetime.now():
+                print(self.username + " auth requested by " + username + "nonce invalid")
                 return False
             nonce = self.nonce_database[username]['value']
 
-            hashed_pass_server = hash_function(nonce+cnonce+username)
+            hashed_pass_server = hash_function(nonce+cnonce+self.password_database[username])
             return secrets.compare_digest(hashed_pass_server, hashed_pass)
-        except Exception:
+        except Exception as e:
+            print(e)
+            print(self.username + " auth requested by " + username + "nonce invalid")
             return False
 
-    def send_message(self):
-        pass
+
 
 if __name__ == '__main__':
-    #TODO
-
     password_database = {
         'Alice': '8xHm5EbL6S%M%QHD^UN327Y8dzJq7B*_Zk@bdJ=39A97^3%rsr',
         'Jon': 'atpy+hQB4uc4b!+xs?fBY%_?+ASf_*r@fFD3GKVc8-63?vku6F',
